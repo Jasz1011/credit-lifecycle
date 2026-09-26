@@ -20,6 +20,55 @@ El proyecto fue construido para una prueba técnica de desarrollo Full Stack. La
 - Swagger/OpenAPI, códigos de error estables y healthcheck.
 - Persistencia SQLite mediante volumen Docker.
 
+## Alcance de la entrega
+
+Para que la evaluación sea trazable, CreditFlow separa explícitamente **lo exigido por la prueba**, **los extras propuestos en el documento original** y **las mejoras añadidas durante la implementación**. Las mejoras no se presentan como requisitos de la empresa ni sustituyen el flujo solicitado.
+
+### Requisitos obligatorios de la prueba
+
+La implementación cubre el flujo solicitado de extremo a extremo:
+
+- Login con usuario y contraseña y emisión de JWT firmado.
+- Registro de solicitud con información personal, laboral y financiera.
+- Cálculo de cuota en frontend con los factores definidos para anual, mensual y quincenal.
+- Rechazo de clientes mayores de 80 años.
+- Comité de Riesgo de solo lectura con los campos visibles exigidos.
+- Aprobación con observaciones obligatorias y rechazo de solicitudes.
+- Creación de un crédito relacionado con la solicitud al aprobar.
+- Generación de exactamente N cuotas en el plan de pagos.
+- Desembolso únicamente de créditos aprobados.
+- Bancos LAFISE, FICOHSA, BAC Credomatic y Banpro, con número de cuenta.
+- Cambio de estado a `DISBURSED` al procesar el desembolso.
+- Persistencia SQLite en archivo mediante volumen Docker.
+- Dockerfiles para API y web, más `docker-compose.yml` en la raíz.
+- README de ejecución, resumen de arquitectura y bitácora de uso de IA.
+
+La trazabilidad completa **requisito → implementación → ubicación → verificación** está en [docs/COMPLIANCE_MATRIX.md](docs/COMPLIANCE_MATRIX.md).
+
+### Extras definidos por la prueba
+
+También se implementaron los dos extras indicados en el documento original:
+
+- Refresh Token.
+- Búsqueda por Cédula / Identificación y carga del plan de pagos.
+
+### Mejoras adicionales de implementación
+
+Estas capacidades fueron añadidas como decisiones propias para mejorar robustez, trazabilidad o experiencia de uso, sin alterar las reglas funcionales exigidas:
+
+- Dashboard operativo.
+- Interfaz bilingüe ES/EN.
+- Swagger / OpenAPI y healthcheck.
+- Códigos de error estables y localizables.
+- Desglose del plan en principal, interés y saldo.
+- Manejo explícito de tasa `0 %`.
+- Persistencia monetaria en centavos y tasas en puntos base.
+- Validación estructural de IBAN cuando la entrada tiene ese formato.
+- Compatibilidad banco–IBAN únicamente cuando existe evidencia verificable.
+- Confirmaciones, estados vacíos y mejoras de accesibilidad.
+
+Las decisiones internas de arquitectura y los trade-offs se documentan por separado en [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) y [docs/BUSINESS_RULES.md](docs/BUSINESS_RULES.md).
+
 ## Flujo principal
 
 ```text
