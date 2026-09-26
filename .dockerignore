@@ -1,0 +1,10 @@
+.git
+.qa
+node_modules
+**/node_modules
+**/dist
+**/coverage
+**/*.db*
+.env*
+Prueba Técnica*.docx
+

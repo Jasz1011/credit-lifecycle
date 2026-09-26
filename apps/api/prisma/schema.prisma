@@ -1,0 +1,137 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum EmploymentType {
+  SALARIED
+  SELF_EMPLOYED
+}
+
+enum PaymentFrequency {
+  BIWEEKLY
+  MONTHLY
+  ANNUAL
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  DISBURSED
+}
+
+enum InstallmentStatus {
+  PENDING
+  PAID
+}
+
+enum Bank {
+  LAFISE
+  FICOHSA
+  BAC_CREDOMATIC
+  BANPRO
+}
+
+model User {
+  id                    Int               @id @default(autoincrement())
+  username              String            @unique
+  email                 String            @unique
+  fullName              String
+  passwordHash          String
+  active                Boolean           @default(true)
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  refreshTokens         RefreshToken[]
+  createdApplications   LoanApplication[] @relation("ApplicationCreator")
+  reviewedApplications  LoanApplication[] @relation("ApplicationReviewer")
+  processedDisbursements Disbursement[]    @relation("DisbursementProcessor")
+}
+
+model RefreshToken {
+  id         Int       @id @default(autoincrement())
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  replacedBy String?
+  createdAt  DateTime  @default(now())
+  userId     Int
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+}
+
+model LoanApplication {
+  id                            Int               @id @default(autoincrement())
+  fullName                      String
+  identification               String            @unique
+  email                         String
+  phone                         String
+  birthDate                     DateTime
+  employmentType               EmploymentType
+  workplace                     String
+  employmentYears              Int
+  monthlyIncomeCents            Int
+  requestedAmountCents          Int
+  installmentCount             Int
+  annualInterestRateBasisPoints Int
+  paymentFrequency              PaymentFrequency
+  estimatedPaymentCents         Int
+  status                        ApplicationStatus @default(PENDING)
+  reviewObservations            String?
+  reviewedAt                    DateTime?
+  createdAt                     DateTime          @default(now())
+  updatedAt                     DateTime          @updatedAt
+  createdById                   Int
+  reviewedById                  Int?
+  createdBy                     User              @relation("ApplicationCreator", fields: [createdById], references: [id])
+  reviewedBy                    User?             @relation("ApplicationReviewer", fields: [reviewedById], references: [id])
+  credit                        Credit?
+
+  @@index([status, createdAt])
+  @@index([fullName])
+}
+
+model Credit {
+  id                  Int                  @id @default(autoincrement())
+  creditNumber        String               @unique
+  levelPaymentCents   Int
+  createdAt           DateTime             @default(now())
+  loanApplicationId   Int                  @unique
+  loanApplication     LoanApplication      @relation(fields: [loanApplicationId], references: [id])
+  paymentInstallments PaymentInstallment[]
+  disbursement        Disbursement?
+}
+
+model PaymentInstallment {
+  id                    Int               @id @default(autoincrement())
+  installmentNumber     Int
+  dueDate                DateTime
+  paymentAmountCents     Int
+  principalAmountCents   Int
+  interestAmountCents    Int
+  remainingBalanceCents  Int
+  status                 InstallmentStatus @default(PENDING)
+  creditId               Int
+  credit                 Credit            @relation(fields: [creditId], references: [id], onDelete: Cascade)
+
+  @@unique([creditId, installmentNumber])
+  @@index([creditId, dueDate])
+}
+
+model Disbursement {
+  id            Int      @id @default(autoincrement())
+  bank          Bank
+  accountNumber String
+  amountCents   Int
+  processedAt   DateTime @default(now())
+  creditId      Int      @unique
+  processedById Int
+  credit        Credit   @relation(fields: [creditId], references: [id])
+  processedBy   User     @relation("DisbursementProcessor", fields: [processedById], references: [id])
+}
