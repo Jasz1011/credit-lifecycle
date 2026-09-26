@@ -199,9 +199,9 @@ En un producto real sería preferible:
 Customer 1 ── N LoanApplication
 ```
 
-### Refresh token
+### Implementación del extra Refresh Token
 
-Se utiliza cookie HttpOnly, rotación, persistencia por hash y revocación.
+El extra solicitado se implementa con cookie HttpOnly, rotación, persistencia por hash y revocación.
 
 ### Internacionalización
 

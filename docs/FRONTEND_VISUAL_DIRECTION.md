@@ -131,7 +131,7 @@ La interfaz respeta la restricción de datos del requisito: no muestra informaci
 
 ### Desembolso
 
-El banco se elige mediante un grupo de radios semántico con nombre y logo.
+El banco se elige mediante un grupo de opciones accesible y semántico, con nombre y logo.
 
 La cuenta / IBAN se valida con feedback asociado al campo.
 
@@ -186,7 +186,7 @@ El campo de fecha presenta una entrada localizada y transforma el valor validado
 
 Los elementos internos del selector de fecha nativo dependen del idioma configurado por el navegador y no del catálogo de la aplicación.
 
-## 11. Principios que guiaron el rediseño
+## 11. Principios que guiaron el diseño
 
 - No copiar componentes del sistema público de MCSystems.
 - No inventar información para llenar pantallas.

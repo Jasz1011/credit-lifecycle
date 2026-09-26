@@ -56,9 +56,13 @@ Estas capacidades no se presentan como requisitos originales.
 | Dashboard | Visibilidad operativa | API + UI |
 | ES/EN | Usabilidad | catálogos i18n |
 | Swagger/OpenAPI | Inspección del API | `/api/docs` |
+| Healthcheck | Comprobar disponibilidad de la API y soportar la orquestación Docker | `/api/health` + Compose |
 | Códigos de error estables | Contrato frontend/backend | filtros + traducciones |
 | Desglose de amortización | Plan auditable | pruebas de principal/interés/saldo |
+| Manejo de tasa 0 % | Resolver correctamente el caso límite de la fórmula sin alterar tasas positivas | cálculo financiero + pruebas |
+| Precisión monetaria | Evitar errores acumulativos de punto flotante | importes en centavos + tasas en puntos base |
 | Confirmaciones y estados de UI | Reducir errores de operación | pruebas frontend |
+| Mejoras de accesibilidad | Labels, atributos ARIA, foco y controles semánticos | componentes y formularios frontend |
 | Validación IBAN | Validación estructural real | `bank-account.validator.ts` |
 | Compatibilidad banco–IBAN | Bloquear contradicciones verificables | `bank-iban.validator.ts` |
 | Documentación de fuentes bancarias | Trazabilidad de la mejora | `BANK_ACCOUNT_VALIDATION.md` |
