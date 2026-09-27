@@ -31,6 +31,7 @@ La responsabilidad final sobre arquitectura, alcance y aceptación de cambios fu
 | Validación IBAN | Codex + investigación | Añadir validación estructural sin exigir IBAN | Acepté `ibantools` para evitar mantener manualmente formatos nacionales; backend quedó como autoridad | unitarias + HTTP + E2E |
 | Banco ↔ IBAN | Codex + fuentes oficiales | Comprobar compatibilidad solo con mappings demostrables | Definí `MATCH / MISMATCH / NOT_VERIFIABLE`; descarté mappings con evidencia insuficiente | pruebas por país + E2E |
 | Cobertura parcial | Codex | Corregir el caso en que un código conocido pertenece a otro banco | Detecté el contraejemplo `CR 0102 + LAFISE`; corregí la semántica sin añadir mappings nuevos | unitarias + prueba HTTP antes de transacción |
+| Historial operativo | Codex | Reutilizar relaciones existentes para trazabilidad sin crear un subsistema de auditoría | Evité una migración innecesaria, mantuve intactas las vistas restringidas y limité la proyección a actores, fechas y contexto seguro | pruebas API/web + QA manual ES/EN con crédito aprobado y desembolsado |
 
 ## Ejemplos de revisión humana
 
@@ -174,7 +175,8 @@ También se verificaron:
 - persistencia del volumen;
 - IBAN válido e inválido;
 - incompatibilidad banco–IBAN;
-- compatibilidad con cuenta local.
+- compatibilidad con cuenta local;
+- historial operativo con actores y fechas persistidos, estado de desembolso y cuenta enmascarada.
 
 ## Alcance de las verificaciones E2E
 
