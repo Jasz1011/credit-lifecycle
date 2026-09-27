@@ -168,13 +168,14 @@ td strong { color: var(--ink); }
 .inline-action { min-height: 26px; margin-left: auto; padding: 0.2rem 0.35rem; display: inline-flex; align-items: center; gap: 0.28rem; border: 0; color: currentColor; background: transparent; font-size: inherit; font-weight: 800; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
 /* Forms */
-.application-layout { display: grid; grid-template-columns: minmax(0, 1fr) 318px; align-items: start; gap: 1rem; }
-.form-sections { min-width: 0; display: grid; gap: 0.85rem; }
-.form-section { padding: 1.2rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
-.section-heading { margin-bottom: 1rem; display: flex; align-items: center; gap: 0.65rem; }
-.section-heading span { min-width: 27px; padding-right: 0.55rem; border-right: 2px solid var(--brand-green); color: var(--brand-blue); font: 600 0.68rem "IBM Plex Mono", monospace; }
-.section-heading h2 { margin: 0; font-size: 0.98rem; }
-.field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem; }
+.application-layout { display: grid; grid-template-columns: minmax(0, 1fr) 318px; align-items: start; gap: 0.95rem 1rem; }
+.form-sections { grid-column: 1; grid-row: 1; min-width: 0; display: grid; gap: 0.95rem; }
+.form-section { min-width: 0; padding: 1.35rem 1.45rem 1.5rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.form-section.credit-terms { border-top: 2px solid var(--brand-blue); background: linear-gradient(180deg, #f9fcfe 0, #fff 5rem); }
+.section-heading { margin-bottom: 1.15rem; padding-bottom: 0.8rem; display: flex; align-items: center; gap: 0.8rem; border-bottom: 1px solid var(--border); }
+.section-heading span { width: 28px; height: 28px; flex: 0 0 28px; display: grid; place-items: center; border-radius: 6px; color: var(--brand-blue); background: #eaf4fa; font: 600 0.68rem "IBM Plex Mono", monospace; }
+.section-heading h2 { margin: 0; font-size: 1.02rem; }
+.field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.1rem; }
 .field { display: flex; flex-direction: column; gap: 0.36rem; color: #3d5263; font-size: 0.72rem; font-weight: 700; }
 .field.span-2 { grid-column: span 2; }
 .field input, .field select, .field textarea, .search-bar input, .account-input { width: 100%; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); color: var(--ink); background: #fff; font-weight: 500; transition: border-color var(--transition), box-shadow var(--transition); }
@@ -183,27 +184,55 @@ td strong { color: var(--ink); }
 .field input:hover, .field select:hover, .field textarea:hover, .account-input:hover { border-color: #94a8b7; }
 .field input:focus, .field select:focus, .field textarea:focus, .search-bar input:focus, .account-input:focus, .compact-search input:focus { border-color: var(--brand-blue); outline: 0; box-shadow: 0 0 0 3px rgba(2, 112, 184, 0.11); }
 .field input[aria-invalid="true"], .field select[aria-invalid="true"], .field textarea[aria-invalid="true"], .account-input[aria-invalid="true"] { border-color: #c6534b; }
-.localized-date-field { position: relative; display: flex; gap: 0.4rem; }
-.localized-date-field > input[type="text"] { flex: 1; min-width: 0; }
-.localized-date-field .date-picker-button { width: 42px; height: 42px; flex: 0 0 42px; display: grid; place-items: center; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); color: var(--text-secondary); background: #fff; cursor: pointer; }
-.localized-date-field .date-picker-button:hover { border-color: var(--brand-blue); color: var(--brand-blue); }
-.localized-date-field .native-date-picker { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; padding: 0; opacity: 0; pointer-events: none; }
+.application-layout .field { gap: 0.42rem; color: #344a5b; font-size: 0.74rem; }
+.application-layout .field input, .application-layout .field select { height: 45px; padding-inline: 0.85rem; }
+.application-layout .field input::placeholder { color: #8b9caa; opacity: 1; }
+.application-layout .field select { appearance: none; padding-right: 2.2rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='m4 6 4 4 4-4' stroke='%23607486' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 16px; }
+.application-layout .field input:disabled, .application-layout .field select:disabled { color: var(--text-muted); background-color: var(--surface-secondary); cursor: not-allowed; }
+.localized-date-field { position: relative; min-width: 0; }
+.date-input-wrap { position: relative; display: flex; align-items: center; }
+.date-input-wrap > svg { position: absolute; left: 0.85rem; z-index: 1; color: var(--text-secondary); pointer-events: none; }
+.application-layout .date-input-wrap input { padding-left: 2.5rem; padding-right: 2.7rem; }
+.localized-date-field .date-picker-button { position: absolute; right: 3px; width: 39px; height: 39px; display: grid; place-items: center; border: 0; border-radius: 6px; color: var(--text-secondary); background: transparent; cursor: pointer; transition: color var(--transition), background-color var(--transition); }
+.localized-date-field .date-picker-button:hover, .localized-date-field .date-picker-button[aria-expanded="true"] { color: var(--brand-blue); background: #eaf4fa; }
+.date-popover { position: absolute; z-index: 25; top: calc(100% + 0.45rem); left: 0; width: min(342px, calc(100vw - 2.5rem)); padding: 0.85rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: #fff; box-shadow: 0 16px 35px rgba(16, 40, 62, 0.15); font-weight: 500; }
+.date-calendar-header { display: flex; align-items: center; gap: 0.35rem; }
+.application-layout .date-calendar-header select { width: auto; min-width: 0; height: 36px; padding: 0 0.55rem; appearance: auto; border: 1px solid var(--border); border-radius: 6px; color: var(--ink); background: #fff; background-image: none; font-size: 0.75rem; font-weight: 700; text-transform: capitalize; }
+.date-calendar-header select:first-of-type { flex: 1; }
+.date-calendar-header select:last-of-type { flex: 0 0 76px; }
+.date-calendar-nav { width: 36px; height: 36px; flex: 0 0 36px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); background: #fff; cursor: pointer; }
+.date-calendar-nav:hover:not(:disabled) { color: var(--brand-blue); background: #eaf4fa; }
+.date-calendar-nav:disabled { opacity: 0.4; cursor: not-allowed; }
+.date-calendar-weekdays, .date-calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.15rem; }
+.date-calendar-weekdays { margin-top: 0.8rem; margin-bottom: 0.35rem; }
+.date-calendar-weekdays span { color: var(--text-muted); font-size: 0.64rem; font-weight: 700; text-align: center; text-transform: uppercase; }
+.date-calendar-days > * { min-width: 0; height: 37px; display: grid; place-items: center; }
+.date-calendar-days .date-outside { color: #b3bfc8; font-size: 0.72rem; }
+.date-calendar-days .date-day { border: 1px solid transparent; border-radius: 7px; color: var(--ink); background: transparent; font-size: 0.76rem; cursor: pointer; transition: background-color var(--transition), color var(--transition); }
+.date-calendar-days .date-day:hover:not(:disabled) { color: var(--brand-blue); background: #eaf4fa; }
+.date-calendar-days .date-day.today { border-color: var(--brand-blue); }
+.date-calendar-days .date-day.selected, .date-calendar-days .date-day.selected:hover { color: #fff; border-color: var(--brand-blue); background: var(--brand-blue); }
+.date-calendar-days .date-day:disabled { color: #bdc8d0; cursor: not-allowed; }
 .field small { color: var(--text-muted); font-weight: 500; }
 .field-error, .field small.field-error { color: var(--danger); }
 .form-error { margin: 0.75rem 0 0; color: var(--danger); font-size: 0.75rem; }
-.submit-button { justify-self: end; min-width: 190px; }
-.credit-summary { position: sticky; top: 82px; overflow: hidden; padding: 1.25rem; border-radius: var(--radius-md); color: #e7eff4; background: var(--navy); box-shadow: 0 12px 30px rgba(16, 40, 62, 0.13); }
+.form-actions { grid-column: 1; grid-row: 2; display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 0.8rem; padding: 0.9rem 1.2rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: #fff; }
+.form-actions .message { flex: 1 1 260px; margin: 0; }
+.submit-button { min-width: 190px; }
+.credit-summary { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 82px; overflow: hidden; padding: 1.25rem; border-radius: var(--radius-md); color: #e7eff4; background: var(--navy); box-shadow: 0 8px 22px rgba(16, 40, 62, 0.12); }
 .credit-summary::before { content: ""; position: absolute; inset: 0 0 auto; height: 3px; background: linear-gradient(90deg, var(--brand-blue) 0 62%, var(--brand-green) 62%); }
-.summary-icon { width: auto; height: auto; margin-bottom: 1rem; display: flex; justify-content: flex-start; color: #9fd470; background: transparent; }
-.summary-icon svg { width: 22px; }
+.summary-head { display: flex; align-items: center; gap: 0.55rem; }
+.summary-icon { display: flex; color: #9fd470; }
+.summary-icon svg { width: 19px; }
 .credit-summary .eyebrow { color: #9fd470; }
-.credit-summary dl { margin: 0; }
+.summary-head .eyebrow { margin: 0; }
+.credit-summary dl { margin: 1rem 0 0; border-top: 1px solid rgba(220, 228, 236, 0.14); }
 .credit-summary dl div { padding: 0.66rem 0; display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid rgba(220, 228, 236, 0.14); }
 .credit-summary dt { color: #a9bac6; font-size: 0.68rem; }
 .credit-summary dd { margin: 0; color: #f8fbfc; font: 500 0.74rem "IBM Plex Mono", monospace; text-align: right; }
-.estimated-payment { margin-top: 1.15rem; }
+.estimated-payment { margin-top: 1.3rem; }
 .estimated-payment span { display: block; color: #a9bac6; font-size: 0.69rem; }
-.estimated-payment strong { margin-top: 0.26rem; display: block; color: #fff; font: 500 1.55rem "IBM Plex Mono", monospace; letter-spacing: -0.045em; }
+.estimated-payment strong { margin-top: 0.35rem; display: block; color: #fff; font: 500 1.7rem "IBM Plex Mono", monospace; letter-spacing: -0.045em; overflow-wrap: anywhere; }
 
 /* Risk */
 .risk-case-card { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); box-shadow: var(--shadow-sm); }
@@ -337,7 +366,8 @@ td strong { color: var(--ink); }
 
 @media (max-width: 1180px) {
   .application-layout { grid-template-columns: 1fr; }
-  .credit-summary { position: static; grid-row: 1; }
+  .credit-summary { grid-column: 1; grid-row: 2; position: static; }
+  .form-actions { grid-row: 3; }
   .disbursement-grid { grid-template-columns: minmax(280px, 0.75fr) minmax(400px, 1.25fr); }
   .compact-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .compact-details div:nth-child(3n) { border-right: 1px solid var(--border); }
@@ -374,6 +404,9 @@ td strong { color: var(--ink); }
   .section-toolbar { align-items: flex-start; }
   .field-grid { grid-template-columns: 1fr; }
   .field.span-2 { grid-column: auto; }
+  .form-section { padding: 1.1rem; }
+  .form-actions { padding: 0.75rem; }
+  .date-popover { max-width: calc(100vw - 2rem); }
   .submit-button { width: 100%; }
   .risk-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .risk-facts div:nth-child(3n) { border-right: 1px solid var(--border); }

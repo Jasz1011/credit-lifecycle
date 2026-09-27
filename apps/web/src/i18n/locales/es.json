@@ -127,7 +127,12 @@
     "selectOption": "Seleccione una opción",
     "dateFormatHint": "Formato: dd/mm/aaaa",
     "datePlaceholder": "dd/mm/aaaa",
-    "openCalendar": "Abrir calendario"
+    "openCalendar": "Abrir calendario",
+    "calendarTitle": "Elegir fecha de nacimiento",
+    "calendarMonth": "Mes",
+    "calendarYear": "Año",
+    "previousMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente"
   },
   "risk": {
     "eyebrow": "Dictamen",

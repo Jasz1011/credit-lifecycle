@@ -1,11 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Calculator, CalendarDays, Save } from 'lucide-react';
+import { Calculator, Save } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Message } from '../components/Feedback';
+import { BirthDatePicker } from '../components/BirthDatePicker';
 import { PageHeader } from '../components/PageHeader';
 import { api, getErrorCode } from '../lib/api';
 import { createApplicationSchema, getEstimatePreview } from '../lib/applicationForm';
@@ -19,7 +20,6 @@ export function NewApplicationPage() {
   const queryClient = useQueryClient();
   const [errorCode, setErrorCode] = useState<string | null>(null);
   const [birthDateText, setBirthDateText] = useState('');
-  const nativeDateRef = useRef<HTMLInputElement>(null);
   const schema = useMemo(() => createApplicationSchema(t), [t]);
   type FormValues = typeof schema._output;
 
@@ -34,6 +34,16 @@ export function NewApplicationPage() {
     const invalidFields = Object.keys(errors) as Array<keyof FormValues>;
     if (invalidFields.length) void trigger(invalidFields);
   }, [errors, i18n.language, trigger]);
+  const previousDateLanguage = useRef(i18n.language);
+  useEffect(() => {
+    if (previousDateLanguage.current === i18n.language) return;
+    const oldLanguage = previousDateLanguage.current;
+    previousDateLanguage.current = i18n.language;
+    setBirthDateText((current) => {
+      const iso = parseDateInput(current, oldLanguage);
+      return iso ? formatDateInput(iso, i18n.language) : current;
+    });
+  }, [i18n.language]);
   const [amount, rate, installments, frequency] = watch([
     'requestedAmount', 'annualInterestRate', 'installmentCount', 'paymentFrequency',
   ]);
@@ -64,21 +74,13 @@ export function NewApplicationPage() {
               <label className="field">{t('form.identification')}<input className="mono" autoComplete="off" spellCheck={false} aria-invalid={Boolean(errors.identification)} aria-describedby={describedBy('identification', errors.identification?.message)} {...register('identification')} />{fieldError('identification', errors.identification?.message)}</label>
               <div className="field">
                 <label htmlFor="birth-date-input">{t('form.birthDate')}</label>
-                <div className="localized-date-field">
-                  <input id="birth-date-input" type="text" inputMode="numeric" autoComplete="bday" placeholder={t('form.datePlaceholder')} value={birthDateText} aria-describedby={errors.birthDate ? 'birth-date-hint birth-date-error' : 'birth-date-hint'} aria-invalid={Boolean(errors.birthDate)} onChange={(event) => {
-                    const next = event.target.value;
-                    setBirthDateText(next);
-                    setValue('birthDate', parseDateInput(next) ?? next, { shouldDirty: true, shouldValidate: Boolean(errors.birthDate) });
-                  }} onBlur={() => { void trigger('birthDate'); }} />
-                  <button type="button" className="date-picker-button" aria-label={t('form.openCalendar')} onClick={() => {
-                    if (nativeDateRef.current?.showPicker) nativeDateRef.current.showPicker();
-                    else nativeDateRef.current?.focus();
-                  }}><CalendarDays size={17} aria-hidden="true" /></button>
-                  <input ref={nativeDateRef} className="native-date-picker" type="date" lang={i18n.language.startsWith('en') ? 'en-GB' : 'es'} tabIndex={-1} aria-hidden="true" max={new Date().toISOString().slice(0, 10)} onChange={(event) => {
-                    setBirthDateText(event.target.value ? formatDateInput(event.target.value) : '');
-                    setValue('birthDate', event.target.value, { shouldDirty: true, shouldValidate: true });
-                  }} />
-                </div>
+                <BirthDatePicker text={birthDateText} language={i18n.language} invalid={Boolean(errors.birthDate)} describedBy={errors.birthDate ? 'birth-date-hint birth-date-error' : 'birth-date-hint'} onTextChange={(next) => {
+                  setBirthDateText(next);
+                  setValue('birthDate', parseDateInput(next, i18n.language) ?? next, { shouldDirty: true, shouldValidate: Boolean(errors.birthDate) });
+                }} onDateSelect={(iso) => {
+                  setBirthDateText(formatDateInput(iso, i18n.language));
+                  setValue('birthDate', iso, { shouldDirty: true, shouldValidate: true });
+                }} onBlur={() => { void trigger('birthDate'); }} />
                 <input type="hidden" {...register('birthDate')} />
                 <small id="birth-date-hint">{t('form.dateFormatHint')}</small>{fieldError('birth-date', errors.birthDate?.message)}
               </div>
@@ -95,31 +97,32 @@ export function NewApplicationPage() {
               <label className="field">{t('form.monthlyIncome')}<input type="number" inputMode="decimal" min="0.01" step="0.01" autoComplete="off" aria-invalid={Boolean(errors.monthlyIncome)} aria-describedby={describedBy('monthly-income', errors.monthlyIncome?.message)} {...register('monthlyIncome', { valueAsNumber: true })} />{fieldError('monthly-income', errors.monthlyIncome?.message)}</label>
             </div>
           </section>
-          <section className="form-section">
+          <section className="form-section credit-terms">
             <div className="section-heading"><span>03</span><h2>{t('form.credit')}</h2></div>
             <div className="field-grid">
               <label className="field">{t('form.requestedAmount')}<input type="number" inputMode="decimal" min="0.01" step="0.01" autoComplete="off" aria-invalid={Boolean(errors.requestedAmount)} aria-describedby={describedBy('requested-amount', errors.requestedAmount?.message)} {...register('requestedAmount', { valueAsNumber: true })} />{fieldError('requested-amount', errors.requestedAmount?.message)}</label>
-              <label className="field">{t('form.installmentCount')}<input type="number" inputMode="numeric" min="1" max="600" autoComplete="off" aria-invalid={Boolean(errors.installmentCount)} aria-describedby={describedBy('installment-count', errors.installmentCount?.message)} {...register('installmentCount', { valueAsNumber: true })} />{fieldError('installment-count', errors.installmentCount?.message)}</label>
               <label className="field">{t('form.annualRate')}<input type="number" inputMode="decimal" min="0" max="100" step="0.01" autoComplete="off" aria-invalid={Boolean(errors.annualInterestRate)} aria-describedby={describedBy('annual-rate', errors.annualInterestRate?.message)} {...register('annualInterestRate', { valueAsNumber: true })} />{fieldError('annual-rate', errors.annualInterestRate?.message)}</label>
+              <label className="field">{t('form.installmentCount')}<input type="number" inputMode="numeric" min="1" max="600" autoComplete="off" aria-invalid={Boolean(errors.installmentCount)} aria-describedby={describedBy('installment-count', errors.installmentCount?.message)} {...register('installmentCount', { valueAsNumber: true })} />{fieldError('installment-count', errors.installmentCount?.message)}</label>
               <label className="field">{t('form.frequency')}<select aria-invalid={Boolean(errors.paymentFrequency)} aria-describedby={describedBy('payment-frequency', errors.paymentFrequency?.message)} {...register('paymentFrequency')}><option value="">{t('form.selectOption')}</option><option value="BIWEEKLY">{t('form.biweekly')}</option><option value="MONTHLY">{t('form.monthly')}</option><option value="ANNUAL">{t('form.annual')}</option></select>{fieldError('payment-frequency', errors.paymentFrequency?.message)}</label>
             </div>
           </section>
-          {errorCode ? <Message kind="error">{t(`errors.${errorCode}`, { defaultValue: t('errors.UNKNOWN_ERROR') })}</Message> : null}
-          <button className="button primary submit-button" type="submit" disabled={mutation.isPending}>
-            <Save size={18} aria-hidden="true" /> {mutation.isPending ? t('form.submitting') : t('form.submit')}
-          </button>
         </div>
         <aside className="credit-summary">
-          <div className="summary-icon" aria-hidden="true"><Calculator /></div>
-          <p className="eyebrow">{t('form.summary')}</p>
+          <div className="summary-head"><div className="summary-icon" aria-hidden="true"><Calculator /></div><p className="eyebrow">{t('form.summary')}</p></div>
+          <div className="estimated-payment"><span>{t('form.estimatedPayment')}</span><strong>{estimatedPayment === null ? '—' : formatMoney(estimatedPayment, i18n.language)}</strong></div>
           <dl>
             <div><dt>{t('form.requestedAmount')}</dt><dd>{hasAmount ? formatMoney(amount, i18n.language) : '—'}</dd></div>
             <div><dt>{t('form.annualRate')}</dt><dd>{hasRate ? `${rate}%` : '—'}</dd></div>
             <div><dt>{t('form.frequency')}</dt><dd>{hasFrequency ? t(`frequency.${frequency}`) : '—'}</dd></div>
             <div><dt>{t('form.installmentCount')}</dt><dd>{hasInstallments ? installments : '—'}</dd></div>
           </dl>
-          <div className="estimated-payment"><span>{t('form.estimatedPayment')}</span><strong>{estimatedPayment === null ? '—' : formatMoney(estimatedPayment, i18n.language)}</strong></div>
         </aside>
+        <div className="form-actions">
+          {errorCode ? <Message kind="error">{t(`errors.${errorCode}`, { defaultValue: t('errors.UNKNOWN_ERROR') })}</Message> : null}
+          <button className="button primary submit-button" type="submit" disabled={mutation.isPending}>
+            <Save size={18} aria-hidden="true" /> {mutation.isPending ? t('form.submitting') : t('form.submit')}
+          </button>
+        </div>
       </form>
     </>
   );

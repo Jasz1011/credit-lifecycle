@@ -115,10 +115,13 @@ describe('localized date entry', () => {
   it('converts a valid displayed date to the ISO API value', () => {
     expect(parseDateInput('25/09/1946')).toBe('1946-09-25');
     expect(formatDateInput('1946-09-25')).toBe('25/09/1946');
+    expect(parseDateInput('09/25/1946', 'en')).toBe('1946-09-25');
+    expect(formatDateInput('1946-09-25', 'en')).toBe('09/25/1946');
   });
 
   it('rejects impossible dates and incomplete entry', () => {
     expect(parseDateInput('31/02/2020')).toBeNull();
+    expect(parseDateInput('02/31/2020', 'en')).toBeNull();
     expect(parseDateInput('01/01/20')).toBeNull();
   });
 });

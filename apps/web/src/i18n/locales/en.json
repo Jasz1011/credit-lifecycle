@@ -125,9 +125,14 @@
     "submit": "Save application",
     "submitting": "Saving…",
     "selectOption": "Select an option",
-    "dateFormatHint": "Format: dd/mm/yyyy",
-    "datePlaceholder": "dd/mm/yyyy",
-    "openCalendar": "Open calendar"
+    "dateFormatHint": "Format: MM/dd/yyyy",
+    "datePlaceholder": "MM/dd/yyyy",
+    "openCalendar": "Open calendar",
+    "calendarTitle": "Choose date of birth",
+    "calendarMonth": "Month",
+    "calendarYear": "Year",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month"
   },
   "risk": {
     "eyebrow": "Decision",
@@ -234,7 +239,7 @@
     "maxValue": "Enter a value of {{count}} or less.",
     "age": "Applicants older than 80 are not allowed.",
     "futureDate": "Date of birth cannot be in the future.",
-    "dateFormat": "Enter a valid date in dd/mm/yyyy format.",
+    "dateFormat": "Enter a valid date in MM/dd/yyyy format.",
     "employmentType": "Select an employment type.",
     "paymentFrequency": "Select a payment frequency."
   },
