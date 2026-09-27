@@ -141,6 +141,15 @@ La aprobación y el desembolso utilizan transacciones de base de datos y restric
 
 Más detalle: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+## Diseño en Figma
+
+El flujo visual completo también está documentado en un archivo Figma editable, reconstruido a partir de capturas del frontend funcionando. Incluye los estados principales desde Login hasta Plan de Pagos cargado, además de componentes reutilizables y referencias de producción.
+
+- [Abrir CreditFlow en Figma](https://www.figma.com/design/qJdrQ7BRooH9DG8jqFZRe5)
+- [Documentación del diseño](docs/FIGMA_DESIGN.md)
+
+La auditoría final del archivo confirmó 11 pantallas reconstruidas, 51 componentes/component sets, ningún solapamiento entre frames y ningún nombre duplicado de componente.
+
 ## Inicio rápido con Docker
 
 ### Requisito
@@ -370,6 +379,7 @@ docs/
 ├── CREDIT_LIFECYCLE.bpmn
 ├── AI_USAGE.md
 ├── FRONTEND_VISUAL_DIRECTION.md
+├── FIGMA_DESIGN.md
 ├── BRAND_ASSETS.md
 └── assets/credit-lifecycle-bpmn.svg
 ```
@@ -381,6 +391,7 @@ docs/
 - [Uso de IA](docs/AI_USAGE.md): cómo se utilizó IA, qué decisiones fueron revisadas y cómo se verificaron.
 - [Validación bancaria](docs/BANK_ACCOUNT_VALIDATION.md): diseño y fuentes de la mejora IBAN.
 - [Dirección visual](docs/FRONTEND_VISUAL_DIRECTION.md): criterio de diseño del frontend.
+- [Diseño en Figma](docs/FIGMA_DESIGN.md): pantallas reconstruidas, componentes reutilizables, auditoría final y enlace al archivo editable.
 - [Activos de marca](docs/BRAND_ASSETS.md): procedencia y límites de uso de logos públicos.
 
 ## Uso de IA
