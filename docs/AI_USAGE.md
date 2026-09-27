@@ -33,6 +33,7 @@ La responsabilidad final sobre arquitectura, alcance y aceptación de cambios fu
 | Cobertura parcial | Codex | Corregir el caso en que un código conocido pertenece a otro banco | Detecté el contraejemplo `CR 0102 + LAFISE`; corregí la semántica sin añadir mappings nuevos | unitarias + prueba HTTP antes de transacción |
 | Historial operativo | Codex | Reutilizar relaciones existentes para trazabilidad sin crear un subsistema de auditoría | Evité una migración innecesaria, mantuve intactas las vistas restringidas y limité la proyección a actores, fechas y contexto seguro | pruebas API/web + QA manual ES/EN con crédito aprobado y desembolsado |
 | Integración SQLite | Codex | Demostrar ACID e invariantes sobre persistencia real sin alterar producción | Acepté una suite aislada con Prisma real y SQLite temporal; rechacé cambios de dominio y mantuve la base local fuera del harness | rollback real, `unique`, estados e invariantes financieras sobre SQLite |
+| Modelo BPMN | Codex | Estructurar el ciclo existente por responsables y decisiones | Contrasté tareas, estados y transacciones con servicios y reglas documentadas; descarté pasos no implementados | validación de XML, IDs, referencias y recorridos del diagrama |
 
 ## Ejemplos de revisión humana
 

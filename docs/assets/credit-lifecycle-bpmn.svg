@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2760 750" role="img" aria-labelledby="title desc">
+  <title id="title">Ciclo de vida del crédito en CreditFlow</title>
+  <desc id="desc">Diagrama BPMN horizontal con cuatro carriles. La solicitud se registra, se revisa en Comité y se aprueba o rechaza. La aprobación crea crédito y N cuotas atómicamente. Un operador registra banco y cuenta; el sistema desembolsa solo un crédito aprobado.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none" stroke="#516b7c" stroke-width="1.5"/></marker>
+    <style>
+      .lane-label{font:600 16px 'Segoe UI',Arial,sans-serif;fill:#213f56}
+      .task{font:600 15px 'Segoe UI',Arial,sans-serif;fill:#173a52}
+      .event-label{font:600 14px 'Segoe UI',Arial,sans-serif;fill:#173a52}
+      .branch-label{font:600 13px 'Segoe UI',Arial,sans-serif;fill:#38546a}
+      .note{font:14px 'Segoe UI',Arial,sans-serif;fill:#466177}
+      .flow{fill:none;stroke:#516b7c;stroke-width:2;stroke-linejoin:round;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="2760" height="750" fill="#ffffff"/>
+  <rect x="20" y="20" width="2720" height="700" rx="4" fill="#ffffff" stroke="#7890a2" stroke-width="1.5"/>
+  <rect x="20" y="20" width="30" height="700" fill="#e8eef3"/>
+  <rect x="50" y="20" width="2690" height="140" fill="#f7fafc"/>
+  <rect x="50" y="160" width="2690" height="170" fill="#ffffff"/>
+  <rect x="50" y="330" width="2690" height="220" fill="#f7fafc"/>
+  <rect x="50" y="550" width="2690" height="170" fill="#ffffff"/>
+  <path d="M50 20V720 M210 20V720 M50 160H2740 M50 330H2740 M50 550H2740" fill="none" stroke="#c5d3df" stroke-width="1.3"/>
+  <text class="lane-label" transform="translate(39 385) rotate(-90)" text-anchor="middle">CreditFlow</text>
+  <text class="lane-label" x="68" y="95">Usuario / Analista</text>
+  <text class="lane-label" x="68" y="250">Comité de Riesgo</text>
+  <text class="lane-label" x="68" y="445">Sistema</text>
+  <text class="lane-label" x="68" y="640">Operador de Desembolso</text>
+  <g aria-label="Flujos de secuencia">
+    <path id="Flow_01" class="flow" d="M266 90 L300 90"/>
+    <path id="Flow_02" class="flow" d="M440 90 L480 90"/>
+    <path id="Flow_03" class="flow" d="M630 90 L655 90 L655 413 L680 413"/>
+    <path id="Flow_04" class="flow" d="M840 413 L865 413 L865 243 L900 243"/>
+    <path id="Flow_05" class="flow" d="M1050 243 L1100 243"/>
+    <path id="Flow_06" class="flow" d="M1150 243 L1180 243 L1180 210 L1215 210"/>
+    <path id="Flow_07" class="flow" d="M1365 210 L1400 210 L1400 381 L1440 381"/>
+    <path id="Flow_08" class="flow" d="M1595 381 L1650 381"/>
+    <path id="Flow_09" class="flow" d="M1125 268 L1125 288 L1215 288"/>
+    <path id="Flow_10" class="flow" d="M1380 288 L1410 288 L1410 476 L1440 476"/>
+    <path id="Flow_11" class="flow" d="M1660 476 L1690 476 L1690 638 L1720 638"/>
+    <path id="Flow_12" class="flow" d="M1885 638 L1930 638"/>
+    <path id="Flow_13" class="flow" d="M2105 638 L2150 638"/>
+    <path id="Flow_14" class="flow" d="M2305 638 L2330 638 L2330 476 L2360 476"/>
+    <path id="Flow_15" class="flow" d="M2565 476 L2620 476"/>
+  </g>
+  <text class="branch-label" x="1176" y="196">No</text>
+  <text class="branch-label" x="1150" y="282">Sí</text>
+  <circle cx="248" cy="90" r="18" fill="#ffffff" stroke="#276a50" stroke-width="2.3"/>
+  <text class="event-label" x="248" y="137" text-anchor="middle">Inicio</text>
+  <path d="M1125 218L1150 243L1125 268L1100 243Z" fill="#fff8e8" stroke="#a07028" stroke-width="2"/>
+  <path d="M1116 234L1134 252M1134 234L1116 252" stroke="#a07028" stroke-width="2"/>
+  <text class="event-label" x="1125" y="202" text-anchor="middle">¿Aprobada?</text>
+    <g id="Task_Login">
+      <rect x="300" y="54" width="140" height="72" rx="8" fill="#ffffff" stroke="#51718a" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="370" y="95">Iniciar sesión</tspan></text>
+    </g>
+    <g id="Task_Register">
+      <rect x="480" y="54" width="150" height="72" rx="8" fill="#ffffff" stroke="#51718a" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="555" y="85.5">Registrar</tspan>
+      <tspan x="555" y="104.5">solicitud</tspan></text>
+    </g>
+    <g id="Task_SavePending">
+      <rect x="680" y="377" width="160" height="72" rx="8" fill="#f5f9fc" stroke="#7195ae" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="760" y="408.5">Guardar solicitud</tspan>
+      <tspan x="760" y="427.5">(PENDING)</tspan></text>
+    </g>
+    <g id="Task_Review">
+      <rect x="900" y="207" width="150" height="72" rx="8" fill="#ffffff" stroke="#51718a" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="975" y="238.5">Revisar</tspan>
+      <tspan x="975" y="257.5">solicitud</tspan></text>
+    </g>
+    <g id="Task_Reject">
+      <rect x="1215" y="174" width="150" height="72" rx="8" fill="#ffffff" stroke="#51718a" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="1290" y="205.5">Rechazar</tspan>
+      <tspan x="1290" y="224.5">solicitud</tspan></text>
+    </g>
+    <g id="Task_Approve">
+      <rect x="1215" y="252" width="165" height="72" rx="8" fill="#ffffff" stroke="#51718a" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="1297.5" y="283.5">Aprobar con</tspan>
+      <tspan x="1297.5" y="302.5">observaciones</tspan></text>
+    </g>
+    <g id="Task_SetRejected">
+      <rect x="1440" y="345" width="155" height="72" rx="8" fill="#f5f9fc" stroke="#7195ae" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="1517.5" y="376.5">Marcar</tspan>
+      <tspan x="1517.5" y="395.5">REJECTED</tspan></text>
+    </g>
+    <g id="SubProcess_Approval">
+      <rect x="1440" y="435" width="220" height="82" rx="8" fill="#eef5f2" stroke="#39735c" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="1550" y="471.5">Aprobar, crear crédito</tspan>
+      <tspan x="1550" y="490.5">y generar N cuotas</tspan></text>
+      <rect x="1542" y="501" width="16" height="12" rx="1" fill="#ffffff" stroke="#39735c"/>
+      <path d="M1545 507h10 M1550 503v8" stroke="#39735c" stroke-width="1.2"/>
+    </g>
+    <g id="Task_SelectApproved">
+      <rect x="1720" y="602" width="165" height="72" rx="8" fill="#ffffff" stroke="#51718a" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="1802.5" y="633.5">Seleccionar crédito</tspan>
+      <tspan x="1802.5" y="652.5">aprobado</tspan></text>
+    </g>
+    <g id="Task_EnterBankAccount">
+      <rect x="1930" y="602" width="175" height="72" rx="8" fill="#ffffff" stroke="#51718a" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="2017.5" y="633.5">Indicar banco</tspan>
+      <tspan x="2017.5" y="652.5">y cuenta</tspan></text>
+    </g>
+    <g id="Task_ConfirmDisbursement">
+      <rect x="2150" y="602" width="155" height="72" rx="8" fill="#ffffff" stroke="#51718a" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="2227.5" y="633.5">Confirmar</tspan>
+      <tspan x="2227.5" y="652.5">desembolso</tspan></text>
+    </g>
+    <g id="SubProcess_Disbursement">
+      <rect x="2360" y="435" width="205" height="82" rx="8" fill="#eef5f2" stroke="#39735c" stroke-width="1.7"/>
+      <text class="task" text-anchor="middle">      <tspan x="2462.5" y="471.5">Registrar desembolso</tspan>
+      <tspan x="2462.5" y="490.5">(atómico)</tspan></text>
+      <rect x="2454.5" y="501" width="16" height="12" rx="1" fill="#ffffff" stroke="#39735c"/>
+      <path d="M2457.5 507h10 M2462.5 503v8" stroke="#39735c" stroke-width="1.2"/>
+    </g>
+  <circle cx="1668" cy="381" r="18" fill="#fff7f7" stroke="#af5d5b" stroke-width="3.5"/>
+  <text class="event-label" x="1668" y="423" text-anchor="middle">Solicitud rechazada</text>
+  <circle cx="2638" cy="476" r="18" fill="#f3faf5" stroke="#39735c" stroke-width="3.5"/>
+  <text class="event-label" x="2638" y="520" text-anchor="middle">Crédito desembolsado</text>
+  <path d="M1660 476H1700V398H1725" fill="none" stroke="#8ca0af" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <path d="M1735 350H1725V445H1735" fill="none" stroke="#8ca0af" stroke-width="1.5"/>
+  <text class="note" x="1745" y="377">El plan puede consultarse después</text>
+  <text class="note" x="1745" y="400">por identificación; no es un paso</text>
+  <text class="note" x="1745" y="423">obligatorio para desembolsar.</text>
+</svg>

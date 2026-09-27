@@ -105,6 +105,14 @@ Invariantes relevantes:
 
 El frontend puede ocultar o deshabilitar acciones, pero la API vuelve a comprobar cada regla.
 
+## Modelo BPMN del proceso
+
+El [modelo BPMN 2.0](CREDIT_LIFECYCLE.bpmn) documenta los responsables, la decisión del Comité y los dos finales posibles del proceso. La aprobación agrupa la transición a `APPROVED`, la creación del crédito y las N cuotas en una operación atómica; el desembolso agrupa la transición a `DISBURSED` y su registro. La consulta posterior del plan por identificación se indica como posibilidad de solo lectura, no como requisito previo al desembolso.
+
+La implementación sigue siendo una máquina de estados dentro del monolito modular. No se utiliza un motor BPM dedicado: el flujo actual es pequeño y estable. Un motor podría justificarse si más adelante surgieran múltiples tareas humanas, temporizadores, SLA, escalaciones o procesos de larga duración; ninguno de ellos forma parte del proceso actual.
+
+![Ciclo de vida BPMN](assets/credit-lifecycle-bpmn.svg)
+
 ## 6. Transacciones y concurrencia
 
 ### Aprobación

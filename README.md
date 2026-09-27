@@ -367,12 +367,15 @@ docs/
 ├── BANK_ACCOUNT_VALIDATION.md
 ├── BUSINESS_RULES.md
 ├── COMPLIANCE_MATRIX.md
+├── CREDIT_LIFECYCLE.bpmn
 ├── AI_USAGE.md
 ├── FRONTEND_VISUAL_DIRECTION.md
-└── BRAND_ASSETS.md
+├── BRAND_ASSETS.md
+└── assets/credit-lifecycle-bpmn.svg
 ```
 
 - [Arquitectura](docs/ARCHITECTURE.md): estructura, límites, transacciones y decisiones.
+- [Modelo BPMN del ciclo de crédito](docs/CREDIT_LIFECYCLE.bpmn): responsabilidades y decisiones del proceso existente.
 - [Reglas de negocio](docs/BUSINESS_RULES.md): requisitos originales frente a decisiones de implementación.
 - [Matriz de cumplimiento](docs/COMPLIANCE_MATRIX.md): trazabilidad requisito → implementación → validación.
 - [Uso de IA](docs/AI_USAGE.md): cómo se utilizó IA, qué decisiones fueron revisadas y cómo se verificaron.
