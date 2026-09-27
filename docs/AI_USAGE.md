@@ -34,6 +34,7 @@ La responsabilidad final sobre arquitectura, alcance y aceptación de cambios fu
 | Historial operativo | Codex | Reutilizar relaciones existentes para trazabilidad sin crear un subsistema de auditoría | Evité una migración innecesaria, mantuve intactas las vistas restringidas y limité la proyección a actores, fechas y contexto seguro | pruebas API/web + QA manual ES/EN con crédito aprobado y desembolsado |
 | Integración SQLite | Codex | Demostrar ACID e invariantes sobre persistencia real sin alterar producción | Acepté una suite aislada con Prisma real y SQLite temporal; rechacé cambios de dominio y mantuve la base local fuera del harness | rollback real, `unique`, estados e invariantes financieras sobre SQLite |
 | Modelo BPMN | Codex | Estructurar el ciclo existente por responsables y decisiones | Contrasté tareas, estados y transacciones con servicios y reglas documentadas; descarté pasos no implementados | validación de XML, IDs, referencias y recorridos del diagrama |
+| Diseño Figma | ChatGPT + Figma | Reconstruir pantallas reales como frames editables y consolidar componentes reutilizables | Comparé cada reconstrucción con capturas del frontend, conservé estados reales y separé diseño de reglas de negocio | QA visual por pantalla + auditoría final: 11 pantallas, 51 componentes, 0 solapamientos y 0 nombres duplicados |
 
 ## Ejemplos de revisión humana
 
@@ -119,6 +120,21 @@ CR código desconocido + LAFISE → NOT_VERIFIABLE
 ```
 
 Este cambio se hizo en el motor genérico y se cubrió con pruebas, sin hardcodear una condición especial de Costa Rica.
+
+### 7. Diseño visual reproducible
+
+El frontend funcionando se utilizó como fuente de verdad para reconstruir en Figma los estados principales del producto. El objetivo fue documentar la interfaz y consolidar componentes, no generar una especificación paralela ni introducir reglas nuevas.
+
+La revisión final comprobó:
+
+```text
+11 pantallas reconstruidas
+51 componentes / component sets
+0 solapamientos
+0 nombres duplicados de componentes
+```
+
+El detalle y el enlace al archivo editable están en [FIGMA_DESIGN.md](FIGMA_DESIGN.md).
 
 ## Investigación externa asistida
 
