@@ -76,9 +76,24 @@ export interface Installment {
   status: 'PENDING' | 'PAID';
 }
 
+export interface OperationalHistory {
+  application: { registeredAt: string; createdBy: string };
+  review: null | { reviewedAt: string; reviewedBy: string | null; result: 'APPROVED' };
+  credit: { createdAt: string; creditNumber: string };
+  disbursement: null | {
+    processedAt: string;
+    processedBy: string;
+    bank: Bank;
+    maskedAccountNumber: string;
+  };
+}
+
 export interface PaymentSchedule {
-  credit: Credit;
+  credit: Omit<Credit, 'disbursement'> & {
+    disbursement: null | { bank: Bank; processedAt: string };
+  };
   installments: Installment[];
+  history: OperationalHistory;
 }
 
 export interface ApiErrorBody {

@@ -200,7 +200,7 @@
     "emptyDescription": "The summary and payment schedule will show the file's actual data."
   },
   "timeline": {
-    "title": "Credit path",
+    "title": "Operational history",
     "application": "Application",
     "registered": "Registered",
     "committee": "Committee",
@@ -208,7 +208,10 @@
     "credit": "Credit",
     "disbursement": "Disbursement",
     "processed": "Processed",
-    "pending": "Pending"
+    "pending": "Pending",
+    "by": "By:",
+    "bank": "Bank:",
+    "account": "Account:"
   },
   "status": {
     "PENDING": "Pending",

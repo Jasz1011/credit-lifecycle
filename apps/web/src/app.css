@@ -266,7 +266,7 @@ td strong { color: var(--ink); }
 .timeline-heading { margin-bottom: 0.85rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .timeline-heading span { color: var(--text-secondary); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
 .timeline-heading strong { color: var(--navy); font-size: 0.75rem; }
-.credit-timeline ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); list-style: none; }
+.credit-timeline ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); list-style: none; }
 .credit-timeline li { min-width: 0; position: relative; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: 22px auto; gap: 0.35rem; }
 .credit-timeline li:not(:last-child)::after { content: ""; position: absolute; left: 22px; right: 0; top: 10px; height: 1px; background: var(--border); }
 .timeline-marker { width: 21px; height: 21px; z-index: 1; display: grid; place-items: center; border: 1px solid var(--border-strong); border-radius: 50%; color: var(--text-muted); background: #fff; }
@@ -274,7 +274,8 @@ td strong { color: var(--ink); }
 .credit-timeline li.complete .timeline-marker { color: #fff; border-color: var(--action-green); background: var(--action-green); }
 .credit-timeline li > div { min-width: 0; padding-right: 0.6rem; display: flex; flex-direction: column; }
 .credit-timeline li strong { color: var(--ink); font-size: 0.7rem; }
-.credit-timeline li small { margin-top: 0.2rem; overflow: hidden; color: var(--text-muted); font-size: 0.61rem; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.credit-timeline li small { margin-top: 0.2rem; color: var(--text-muted); font-size: 0.61rem; line-height: 1.35; }
+.credit-timeline li small > span, .credit-timeline li small > time { display: block; margin-top: 0.16rem; }
 .schedule-summary { margin-bottom: 0.85rem; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-md); background: #fff; }
 .schedule-summary div { min-width: 0; padding: 0.82rem; display: flex; flex-direction: column; gap: 0.3rem; border-right: 1px solid var(--border); }
 .schedule-summary div:last-child { border-right: 0; }

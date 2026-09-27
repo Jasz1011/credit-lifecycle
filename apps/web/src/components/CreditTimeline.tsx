@@ -1,25 +1,48 @@
 import { Check, Circle } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatDate } from '../lib/format';
-import type { Credit } from '../types/api';
+import { formatDateTime } from '../lib/format';
+import type { Bank, OperationalHistory } from '../types/api';
 
-export function CreditTimeline({ credit }: { credit: Credit }) {
+const bankNames: Record<Bank, string> = {
+  LAFISE: 'LAFISE',
+  FICOHSA: 'FICOHSA',
+  BAC_CREDOMATIC: 'BAC Credomatic',
+  BANPRO: 'Banpro',
+};
+
+export function CreditTimeline({ history }: { history: OperationalHistory }) {
   const { t, i18n } = useTranslation();
-  const disbursed = credit.status === 'DISBURSED' && credit.disbursement;
-  const steps = [
-    { label: t('timeline.application'), value: t('timeline.registered'), complete: true },
-    { label: t('timeline.committee'), value: t('timeline.approved'), complete: true },
+  const steps: Array<{ key: string; label: string; complete: boolean; details: ReactNode }> = [
     {
-      label: t('timeline.credit'),
-      value: `${credit.creditNumber} · ${formatDate(credit.createdAt, i18n.language)}`,
-      complete: true,
+      key: 'application', label: t('timeline.application'), complete: true,
+      details: <>
+        <span>{t('timeline.registered')} · <time dateTime={history.application.registeredAt}>{formatDateTime(history.application.registeredAt, i18n.language)}</time></span>
+        <span>{t('timeline.by')} <strong translate="no">{history.application.createdBy}</strong></span>
+      </>,
+    },
+    ...(history.review ? [{
+      key: 'committee', label: t('timeline.committee'), complete: true,
+      details: <>
+        <span>{t('timeline.approved')} · <time dateTime={history.review.reviewedAt}>{formatDateTime(history.review.reviewedAt, i18n.language)}</time></span>
+        {history.review.reviewedBy ? <span>{t('timeline.by')} <strong translate="no">{history.review.reviewedBy}</strong></span> : null}
+      </>,
+    }] : []),
+    {
+      key: 'credit', label: t('timeline.credit'), complete: true,
+      details: <>
+        <span className="mono" translate="no">{history.credit.creditNumber}</span>
+        <time dateTime={history.credit.createdAt}>{formatDateTime(history.credit.createdAt, i18n.language)}</time>
+      </>,
     },
     {
-      label: t('timeline.disbursement'),
-      value: disbursed
-        ? `${t('timeline.processed')} · ${formatDate(disbursed.processedAt, i18n.language)}`
-        : t('timeline.pending'),
-      complete: Boolean(disbursed),
+      key: 'disbursement', label: t('timeline.disbursement'), complete: history.disbursement !== null,
+      details: history.disbursement ? <>
+        <span>{t('timeline.processed')} · <time dateTime={history.disbursement.processedAt}>{formatDateTime(history.disbursement.processedAt, i18n.language)}</time></span>
+        <span>{t('timeline.by')} <strong translate="no">{history.disbursement.processedBy}</strong></span>
+        <span>{t('timeline.bank')} <strong translate="no">{bankNames[history.disbursement.bank]}</strong></span>
+        <span>{t('timeline.account')} <strong className="mono" translate="no">{history.disbursement.maskedAccountNumber}</strong></span>
+      </> : t('timeline.pending'),
     },
   ];
 
@@ -27,15 +50,15 @@ export function CreditTimeline({ credit }: { credit: Credit }) {
     <section className="credit-timeline" aria-label={t('timeline.title')}>
       <div className="timeline-heading">
         <span>{t('timeline.title')}</span>
-        <strong className="mono" translate="no">{credit.creditNumber}</strong>
+        <strong className="mono" translate="no">{history.credit.creditNumber}</strong>
       </div>
       <ol>
         {steps.map((step) => (
-          <li className={step.complete ? 'complete' : 'pending'} key={step.label}>
+          <li className={step.complete ? 'complete' : 'pending'} key={step.key}>
             <span className="timeline-marker" aria-hidden="true">
               {step.complete ? <Check /> : <Circle />}
             </span>
-            <div><strong>{step.label}</strong><small>{step.value}</small></div>
+            <div><strong>{step.label}</strong><small>{step.details}</small></div>
           </li>
         ))}
       </ol>

@@ -41,7 +41,7 @@ export function PaymentSchedulePage() {
       {schedule.isPending && identification ? <LoadingState label={t('common.loading')} /> : null}
       {schedule.isError && matchesSearch ? <Message kind="error">{t(`errors.${getErrorCode(schedule.error)}`, { defaultValue: t('errors.UNKNOWN_ERROR') })} <button className="inline-action" type="button" onClick={() => void schedule.refetch()}><RefreshCw size={14} aria-hidden="true" />{t('common.retry')}</button></Message> : null}
       {schedule.data && matchesSearch ? <>
-        <CreditTimeline credit={schedule.data.credit} />
+        <CreditTimeline history={schedule.data.history} />
         <section className="schedule-summary">
           <div><small>{t('schedule.credit')}</small><strong className="mono">{schedule.data.credit.creditNumber}</strong></div>
           <div><small>{t('applications.customer')}</small><strong>{schedule.data.credit.fullName}</strong></div>

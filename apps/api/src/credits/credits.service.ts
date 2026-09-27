@@ -2,7 +2,20 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { ApplicationStatus } from '@prisma/client';
 import { AppException } from '../common/errors/app.exception';
 import { PrismaService } from '../prisma/prisma.service';
-import { presentCredit, presentInstallment } from './credits.presenter';
+import { presentCredit, presentInstallment, presentOperationalHistory, presentScheduleCredit } from './credits.presenter';
+
+const scheduleRelations = {
+  loanApplication: {
+    include: {
+      createdBy: { select: { fullName: true } },
+      reviewedBy: { select: { fullName: true } },
+    },
+  },
+  disbursement: {
+    include: { processedBy: { select: { fullName: true } } },
+  },
+  paymentInstallments: { orderBy: { installmentNumber: 'asc' } },
+} as const;
 
 @Injectable()
 export class CreditsService {
@@ -31,18 +44,15 @@ export class CreditsService {
   async getSchedule(id: number) {
     const credit = await this.prisma.credit.findUnique({
       where: { id },
-      include: {
-        loanApplication: true,
-        disbursement: true,
-        paymentInstallments: { orderBy: { installmentNumber: 'asc' } },
-      },
+      include: scheduleRelations,
     });
     if (!credit) {
       throw new AppException('CREDIT_NOT_FOUND', 'Credit not found.', HttpStatus.NOT_FOUND);
     }
     return {
-      credit: presentCredit(credit),
+      credit: presentScheduleCredit(credit),
       installments: credit.paymentInstallments.map(presentInstallment),
+      history: presentOperationalHistory(credit),
     };
   }
 
@@ -57,11 +67,7 @@ export class CreditsService {
     }
     const credit = await this.prisma.credit.findFirst({
       where: { loanApplication: { identification: normalized } },
-      include: {
-        loanApplication: true,
-        disbursement: true,
-        paymentInstallments: { orderBy: { installmentNumber: 'asc' } },
-      },
+      include: scheduleRelations,
     });
     if (!credit) {
       throw new AppException(
@@ -71,9 +77,9 @@ export class CreditsService {
       );
     }
     return {
-      credit: presentCredit(credit),
+      credit: presentScheduleCredit(credit),
       installments: credit.paymentInstallments.map(presentInstallment),
+      history: presentOperationalHistory(credit),
     };
   }
 }
-

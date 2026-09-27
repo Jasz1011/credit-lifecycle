@@ -200,7 +200,7 @@
     "emptyDescription": "El resumen y el plan de pagos se mostrarán con información real del expediente."
   },
   "timeline": {
-    "title": "Ruta del crédito",
+    "title": "Historial operativo",
     "application": "Solicitud",
     "registered": "Registrada",
     "committee": "Comité",
@@ -208,7 +208,10 @@
     "credit": "Crédito",
     "disbursement": "Desembolso",
     "processed": "Procesado",
-    "pending": "Pendiente"
+    "pending": "Pendiente",
+    "by": "Por:",
+    "bank": "Banco:",
+    "account": "Cuenta:"
   },
   "status": {
     "PENDING": "Pendiente",

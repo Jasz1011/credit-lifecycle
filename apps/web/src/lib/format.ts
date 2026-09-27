@@ -14,3 +14,12 @@ export function formatDate(value: string, language: string): string {
   }).format(new Date(value));
 }
 
+export function formatDateTime(value: string, language: string): string {
+  return new Intl.DateTimeFormat(language === 'en' ? 'en-US' : 'es-NI', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(value));
+}
