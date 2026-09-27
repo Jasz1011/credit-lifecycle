@@ -234,6 +234,22 @@ Las dos pantallas deben respetar una restricción explícita de información, pe
 
 La distinción es intencionalmente documentada: el requisito habla de lo que cada pantalla debe mostrar, y no se afirma que ambos endpoints tengan una proyección idéntica.
 
+### Historial operativo del crédito
+
+La consulta del plan de pagos añade una proyección de solo lectura llamada `history`, construida a partir de relaciones y fechas que ya estaban persistidas. No se creó una tabla `AuditLog` ni se requirió una migración.
+
+La proyección utiliza únicamente:
+
+- fecha y usuario de registro de la solicitud;
+- fecha y usuario de revisión cuando existe `reviewedAt` persistido;
+- fecha y número de creación del crédito;
+- fecha, usuario y banco del desembolso cuando existe;
+- número de cuenta de desembolso enmascarado.
+
+Los endpoints de consulta del plan (`/credits/search` y `/credits/:id/payment-schedule`) usan una proyección específica que no serializa el número de cuenta completo. Tampoco incorpora email, teléfono, fecha de nacimiento, ingreso mensual, hashes, tokens ni observaciones libres del Comité.
+
+El historial no modifica estados ni reglas de negocio y no añade datos a las vistas restringidas de Comité o Desembolso. Si un evento no tiene evidencia persistida, no se inventa; por ejemplo, una revisión sin `reviewedAt` no se representa como realizada.
+
 ## 11. UX y accesibilidad
 
 El frontend utiliza un shell responsive, sidebar/drawer, tablas contenidas, estados vacíos, confirmaciones y feedback por campo.
