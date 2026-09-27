@@ -45,6 +45,26 @@ beforeEach(async () => {
 });
 
 describe('validation errors clear after correction', () => {
+  it('blurs a focused numeric input on wheel without changing its value or affecting text inputs', () => {
+    const { container } = renderWithQuery(<NewApplicationPage />);
+    const monthlyIncome = container.querySelector<HTMLInputElement>('[name="monthlyIncome"]');
+    if (!monthlyIncome) throw new Error('Missing monthly income input');
+    fireEvent.change(monthlyIncome, { target: { value: '2500' } });
+    monthlyIncome.focus();
+    expect(document.activeElement).toBe(monthlyIncome);
+
+    fireEvent.wheel(monthlyIncome);
+    expect(document.activeElement).not.toBe(monthlyIncome);
+    expect(monthlyIncome.value).toBe('2500');
+
+    const fullName = container.querySelector<HTMLInputElement>('[name="fullName"]');
+    if (!fullName) throw new Error('Missing full name input');
+    fullName.focus();
+    expect(document.activeElement).toBe(fullName);
+    fireEvent.wheel(fullName);
+    expect(document.activeElement).toBe(fullName);
+  });
+
   it('shows the required birth date error in English when English is selected before submitting', async () => {
     const { container } = renderWithQuery(<><LanguageSwitcher /><NewApplicationPage /></>);
     fireEvent.click(screen.getByRole('button', { name: 'EN' }));

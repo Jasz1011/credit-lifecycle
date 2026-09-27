@@ -65,7 +65,12 @@ export function NewApplicationPage() {
   return (
     <>
       <PageHeader eyebrow={t('form.eyebrow')} title={t('form.title')} description={t('form.description')} />
-      <form className="application-layout" onSubmit={handleSubmit((values) => mutation.mutate(values))} onChange={() => { if (errorCode) setErrorCode(null); }} noValidate>
+      <form className="application-layout" onSubmit={handleSubmit((values) => mutation.mutate(values))} onChange={() => { if (errorCode) setErrorCode(null); }} onWheelCapture={(event) => {
+        const target = event.target;
+        if (target instanceof HTMLInputElement && target.type === 'number' && target === document.activeElement) {
+          target.blur();
+        }
+      }} noValidate>
         <div className="form-sections">
           <section className="form-section">
             <div className="section-heading"><span>01</span><h2>{t('form.personal')}</h2></div>
