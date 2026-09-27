@@ -24,10 +24,10 @@ Las mejoras de implementación se muestran por separado para evitar atribuir a l
 | Observaciones obligatorias al aprobar | DTO + regla de servicio | `ApproveApplicationDto` | rechazo sin observaciones |
 | Crear crédito al aprobar | Relación única | `RiskCommitteeService`, Prisma | prueba de doble aprobación |
 | Número de crédito | Secuencia basada en ID | `RiskCommitteeService` | unicidad |
-| Relacionar crédito y solicitud | Relación 1 a 0..1 | Prisma | restricción `unique` |
+| Relacionar crédito y solicitud | Relación 1 a 0..1 | Prisma | restricción `unique` validada contra SQLite real |
 | Crear plan al aprobar | N cuotas dentro de la aprobación | `PaymentScheduleService` | cantidad exacta |
-| Integridad ACID | Transacción única de aprobación | `RiskCommitteeService` | pruebas de estructura transaccional, propagación de fallos y restricciones de BD |
-| Desembolso solo para aprobados | Filtro + validación backend | `disbursements` | aprobado / pendiente / rechazado |
+| Integridad ACID | Transacción única de aprobación | `RiskCommitteeService` | suite de integración con Prisma + SQLite real: rollback ante fallo del plan, persistencia de estados y restricciones de BD |
+| Desembolso solo para aprobados | Filtro + validación backend | `disbursements` | pruebas unitarias + integración SQLite con APPROVED / PENDING / REJECTED |
 | Mostrar solo campos permitidos en desembolso | `CreditsService.listApproved()` entrega un DTO de crédito más amplio; la vista de Desembolso renderiza únicamente identificación, nombre, monto, tasa, periodicidad y plazo | `CreditsService`, `presentCredit`, `DisbursementsPage` | inspección de DTO + UI |
 | Cuatro bancos exigidos | Enum controlado | Prisma + DTO + `BankSelector` | validación |
 | Número de cuenta obligatorio | DTO + validador | `disbursements` | pruebas de entrada |
