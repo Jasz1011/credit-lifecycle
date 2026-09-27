@@ -15,6 +15,7 @@ El proyecto fue construido para una prueba técnica de desarrollo Full Stack. La
 - Rechazo sin creación de crédito.
 - Desembolso únicamente para créditos aprobados.
 - Consulta de crédito y plan de pagos por Cédula / Identificación.
+- Historial operativo del crédito con fechas y actores reales, integrado en la consulta del plan.
 - Dashboard operativo.
 - Interfaz en español e inglés.
 - Swagger/OpenAPI, códigos de error estables y healthcheck.
@@ -65,6 +66,7 @@ Estas capacidades fueron añadidas como decisiones propias para mejorar robustez
 - Persistencia monetaria en centavos y tasas en puntos base.
 - Validación estructural de IBAN cuando la entrada tiene ese formato.
 - Compatibilidad banco–IBAN únicamente cuando existe evidencia verificable.
+- Historial operativo de solo lectura en Plan de Pagos, derivado de datos persistidos y con la cuenta de desembolso enmascarada.
 - Confirmaciones, estados vacíos y mejoras de accesibilidad.
 
 Las decisiones internas de arquitectura y los trade-offs se documentan por separado en [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) y [docs/BUSINESS_RULES.md](docs/BUSINESS_RULES.md).
@@ -318,6 +320,7 @@ La suite automatizada versionada cubre:
 - comportamiento visible de Comité y Desembolso;
 - cuentas locales e IBAN;
 - compatibilidad banco–IBAN;
+- historial operativo, actores persistidos y no exposición del número de cuenta completo en la respuesta del plan;
 - endpoints HTTP.
 
 Además se realizaron verificaciones de QA de extremo a extremo y persistencia Docker durante el desarrollo. Entre ellas se comprobó explícitamente que el presenter del Comité no expusiera campos adicionales en la vista evaluada. Esos scripts viven en `.qa/`, carpeta deliberadamente excluida del repositorio de entrega, por lo que se documentan como evidencia de QA realizada y no como parte de la suite reproducible publicada.
