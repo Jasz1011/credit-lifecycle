@@ -314,6 +314,8 @@ La suite automatizada versionada cubre:
 - edades límite;
 - transiciones de estado;
 - propagación de fallos dentro de la operación transaccional de aprobación;
+- rollback real de aprobación sobre SQLite temporal cuando falla la generación del plan;
+- restricciones `unique` reales de crédito, desembolso y numeración de cuotas;
 - cantidad de cuotas;
 - doble aprobación y doble desembolso;
 - validaciones de formularios;
@@ -322,6 +324,8 @@ La suite automatizada versionada cubre:
 - compatibilidad banco–IBAN;
 - historial operativo, actores persistidos y no exposición del número de cuenta completo en la respuesta del plan;
 - endpoints HTTP.
+
+La suite incluye además pruebas de integración con Prisma y una SQLite temporal aislada para comprobar persistencia real, rollback transaccional, restricciones de base de datos y guardas de estado sin tocar la base local de desarrollo.
 
 Además se realizaron verificaciones de QA de extremo a extremo y persistencia Docker durante el desarrollo. Entre ellas se comprobó explícitamente que el presenter del Comité no expusiera campos adicionales en la vista evaluada. Esos scripts viven en `.qa/`, carpeta deliberadamente excluida del repositorio de entrega, por lo que se documentan como evidencia de QA realizada y no como parte de la suite reproducible publicada.
 
