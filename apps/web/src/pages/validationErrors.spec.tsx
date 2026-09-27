@@ -3,8 +3,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import '../i18n';
+import i18n from '../i18n';
+import { AuthContext } from '../auth/auth-context';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { api, getErrorCode } from '../lib/api';
+import { LoginPage } from './LoginPage';
 import { RiskCommitteePage } from './RiskCommitteePage';
 import { DisbursementsPage } from './DisbursementsPage';
 import { NewApplicationPage } from './NewApplicationPage';
@@ -28,9 +31,10 @@ function renderWithQuery(element: React.ReactNode, route = '/') {
   );
 }
 
-beforeEach(() => {
+beforeEach(async () => {
   cleanup();
   vi.clearAllMocks();
+  await i18n.changeLanguage('es');
   // jsdom lacks the native modal methods used by the real browser.
   HTMLDialogElement.prototype.showModal = function showModal(this: HTMLDialogElement) {
     this.setAttribute('open', '');
@@ -41,6 +45,33 @@ beforeEach(() => {
 });
 
 describe('validation errors clear after correction', () => {
+  it('shows the required birth date error in English when English is selected before submitting', async () => {
+    const { container } = renderWithQuery(<><LanguageSwitcher /><NewApplicationPage /></>);
+    fireEvent.click(screen.getByRole('button', { name: 'EN' }));
+    await screen.findByRole('textbox', { name: 'Date of birth' });
+    fireEvent.click(screen.getByRole('button', { name: 'Save application' }));
+    await waitFor(() => expect(container.querySelector('#birth-date-error')?.textContent).toBe('This field is required.'));
+  });
+
+  it('relocalizes an existing birth date error when switching ES to EN and back', async () => {
+    const { container } = renderWithQuery(<><LanguageSwitcher /><NewApplicationPage /></>);
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar solicitud' }));
+    await waitFor(() => expect(container.querySelector('#birth-date-error')?.textContent).toBe('Este campo es obligatorio.'));
+    fireEvent.click(screen.getByRole('button', { name: 'EN' }));
+    await waitFor(() => expect(container.querySelector('#birth-date-error')?.textContent).toBe('This field is required.'));
+    fireEvent.click(screen.getByRole('button', { name: 'ES' }));
+    await waitFor(() => expect(container.querySelector('#birth-date-error')?.textContent).toBe('Este campo es obligatorio.'));
+  });
+
+  it('relocalizes existing login validation errors without resubmitting', async () => {
+    render(<AuthContext.Provider value={{ user: null, initializing: false, login: vi.fn(), logout: vi.fn() }}><LoginPage /></AuthContext.Provider>);
+    fireEvent.click(screen.getByRole('button', { name: 'Iniciar sesión' }));
+    await waitFor(() => expect(screen.getAllByText('Este campo es obligatorio.')).toHaveLength(2));
+    fireEvent.click(screen.getByRole('button', { name: 'EN' }));
+    await waitFor(() => expect(screen.getAllByText('This field is required.')).toHaveLength(2));
+    expect(screen.queryByText('Este campo es obligatorio.')).toBeNull();
+  });
+
   it('clears required observations before approval confirmation', async () => {
     const riskCase = {
       id: 7, identification: 'TEST-12345', fullName: 'Cliente', age: 35,
@@ -50,12 +81,15 @@ describe('validation errors clear after correction', () => {
     vi.mocked(api.get).mockImplementation(async (url) => ({
       data: url === '/risk-committee/pending' ? [riskCase] : riskCase,
     } as never));
-    renderWithQuery(<RiskCommitteePage />, '/risk-committee/7');
+    renderWithQuery(<><LanguageSwitcher /><RiskCommitteePage /></>, '/risk-committee/7');
     const approve = await screen.findByRole('button', { name: 'Aprobar crédito' });
     fireEvent.click(approve);
     expect(screen.getByText('Las observaciones son obligatorias para aprobar.')).toBeTruthy();
     const observations = screen.getByRole('textbox', { name: /Observaciones/ });
     expect(observations.getAttribute('aria-invalid')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: 'EN' }));
+    expect(screen.getByText('Observations are required for approval.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'ES' }));
     fireEvent.change(observations, { target: { value: 'Revisión completada' } });
     await waitFor(() => expect(screen.queryByText('Las observaciones son obligatorias para aprobar.')).toBeNull());
     expect(observations.getAttribute('aria-invalid')).toBe('false');
@@ -81,7 +115,7 @@ describe('validation errors clear after correction', () => {
       annualInterestRate: 12, installmentCount: 12, paymentFrequency: 'MONTHLY',
       term: { months: 12, years: 1 }, createdAt: '2026-09-25', disbursement: null,
     }] } as never);
-    renderWithQuery(<DisbursementsPage />);
+    renderWithQuery(<><LanguageSwitcher /><DisbursementsPage /></>);
     fireEvent.click(await screen.findByRole('button', { name: /TEST-12345/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Desembolsar crédito' }));
     expect(screen.getByText('Ingrese un número de cuenta o IBAN.')).toBeTruthy();
@@ -91,6 +125,10 @@ describe('validation errors clear after correction', () => {
     await waitFor(() => expect(screen.queryByText('Ingrese un número de cuenta o IBAN.')).toBeNull());
     expect(account.getAttribute('aria-invalid')).toBe('false');
     expect(account.getAttribute('aria-describedby')).toBe('account-help');
+    fireEvent.change(account, { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Desembolsar crédito' }));
+    fireEvent.click(screen.getByRole('button', { name: 'EN' }));
+    expect(screen.getByText('Enter an account number or IBAN.')).toBeTruthy();
   });
 
   it('replaces a checksum error when a NI IBAN is corrected for the selected bank', async () => {
@@ -129,7 +167,7 @@ describe('validation errors clear after correction', () => {
     }] } as never);
     vi.mocked(api.post).mockRejectedValueOnce(new Error('API conflict')).mockResolvedValueOnce({ data: {} } as never);
     vi.mocked(getErrorCode).mockReturnValueOnce('BANK_IBAN_MISMATCH');
-    renderWithQuery(<DisbursementsPage />);
+    renderWithQuery(<><LanguageSwitcher /><DisbursementsPage /></>);
     fireEvent.click(await screen.findByRole('button', { name: /TEST-12345/ }));
     const account = screen.getByRole('textbox', { name: 'Número de cuenta / IBAN' });
     fireEvent.change(account, { target: { value: 'NI45BAPR00000013000003558124' } });
@@ -137,6 +175,9 @@ describe('validation errors clear after correction', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar desembolso' }));
     expect(await screen.findByText('El IBAN ingresado no corresponde al banco seleccionado.')).toBeTruthy();
     expect(account.getAttribute('aria-invalid')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: 'EN' }));
+    expect(screen.getByText('The entered IBAN does not match the selected bank.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'ES' }));
     fireEvent.click(screen.getByRole('radio', { name: 'Banpro' }));
     expect(screen.queryByText('El IBAN ingresado no corresponde al banco seleccionado.')).toBeNull();
     expect(account.getAttribute('aria-invalid')).toBe('false');

@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowRight, ShieldCheck } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -11,17 +11,24 @@ import mcSystemsLogo from '../assets/brands/mcsystems.png';
 interface LoginValues { identifier: string; password: string }
 
 export function LoginPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { login } = useAuth();
   const [serverError, setServerError] = useState(false);
   const schema = z.object({
     identifier: z.string().min(1, t('validation.required')),
     password: z.string().min(8, t('validation.required')),
   });
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginValues>({
+  const { register, handleSubmit, trigger, formState: { errors, isSubmitting } } = useForm<LoginValues>({
     resolver: zodResolver(schema),
     defaultValues: { identifier: '', password: '' },
   });
+  const previousLanguage = useRef(i18n.language);
+  useEffect(() => {
+    if (previousLanguage.current === i18n.language) return;
+    previousLanguage.current = i18n.language;
+    const invalidFields = Object.keys(errors) as Array<keyof LoginValues>;
+    if (invalidFields.length) void trigger(invalidFields);
+  }, [errors, i18n.language, trigger]);
 
   const onSubmit = async (values: LoginValues) => {
     setServerError(false);

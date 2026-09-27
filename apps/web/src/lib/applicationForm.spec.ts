@@ -1,5 +1,5 @@
 import { createInstance } from 'i18next';
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { createApplicationSchema, getEstimatePreview } from './applicationForm';
 import { formatTerm } from './term';
 import { formatDateInput, parseDateInput } from './dateInput';
@@ -34,12 +34,27 @@ beforeAll(async () => {
   });
 });
 
+beforeEach(async () => {
+  await translator.changeLanguage('es');
+});
+
 function errorFor(field: string, value: unknown): string | undefined {
   const result = createApplicationSchema(translator.t, today).safeParse({ ...valid, [field]: value });
   return result.success ? undefined : result.error.issues.find((issue) => issue.path[0] === field)?.message;
 }
 
 describe('application form validation', () => {
+  it.each([
+    ['es', 'Este campo es obligatorio.', 'La fecha de nacimiento no puede ser futura.', 'No se permiten solicitantes mayores de 80 años.', 'Ingrese un correo electrónico válido.'],
+    ['en', 'This field is required.', 'Date of birth cannot be in the future.', 'Applicants older than 80 are not allowed.', 'Enter a valid email address.'],
+  ])('localizes required date, future date, age and email errors in %s', async (language, required, future, tooOld, email) => {
+    await translator.changeLanguage(language);
+    expect(errorFor('birthDate', '')).toBe(required);
+    expect(errorFor('birthDate', '2030-01-01')).toBe(future);
+    expect(errorFor('birthDate', '1945-09-25')).toBe(tooOld);
+    expect(errorFor('email', 'prueba.com')).toBe(email);
+  });
+
   it('accepts an applicant aged 79', () => {
     expect(errorFor('birthDate', '1947-09-25')).toBeUndefined();
   });

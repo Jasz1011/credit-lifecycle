@@ -29,7 +29,7 @@ export function DisbursementsPage() {
   const [confirmedAccountNumber, setConfirmedAccountNumber] = useState('');
   const processButtonRef = useRef<HTMLButtonElement>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<{ kind: 'success' } | { kind: 'error'; code: string } | null>(null);
   const credits = useQuery({
     queryKey: ['approved-credits'],
     queryFn: () => api.get<Credit[]>('/credits/approved').then((response) => response.data),
@@ -38,7 +38,7 @@ export function DisbursementsPage() {
     mutationFn: () => api.post(`/credits/${selected?.id}/disburse`, { bank, accountNumber: confirmedAccountNumber }),
     onSuccess: async () => {
       setConfirmOpen(false);
-      setMessage({ kind: 'success', text: t('disbursement.success') });
+      setMessage({ kind: 'success' });
       setSelected(null);
       setAccountNumber('');
       setConfirmedAccountNumber('');
@@ -55,7 +55,7 @@ export function DisbursementsPage() {
         setAccountErrorCode(code);
         setMessage(null);
       } else {
-        setMessage({ kind: 'error', text: t(`errors.${code}`, { defaultValue: t('errors.UNKNOWN_ERROR') }) });
+        setMessage({ kind: 'error', code });
       }
     },
   });
@@ -75,7 +75,9 @@ export function DisbursementsPage() {
   return (
     <>
       <PageHeader eyebrow={t('disbursement.eyebrow')} title={t('disbursement.title')} description={t('disbursement.description')} />
-      {message ? <Message kind={message.kind}>{message.text}</Message> : null}
+      {message ? <Message kind={message.kind}>{message.kind === 'error'
+        ? t(`errors.${message.code}`, { defaultValue: t('errors.UNKNOWN_ERROR') })
+        : t('disbursement.success')}</Message> : null}
       {credits.isPending ? <LoadingState label={t('common.loading')} /> : null}
       {credits.isError ? <Message kind="error">{t('disbursement.loadError')} <button className="inline-action" type="button" onClick={() => void credits.refetch()}><RefreshCw size={14} aria-hidden="true" />{t('common.retry')}</button></Message> : null}
       {credits.data?.length === 0 ? <EmptyState title={t('disbursement.empty')} description={t('disbursement.emptyDescription')} /> : null}

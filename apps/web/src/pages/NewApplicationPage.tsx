@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Calculator, CalendarDays, Save } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +27,13 @@ export function NewApplicationPage() {
     resolver: zodResolver(schema),
     mode: 'onTouched',
   });
+  const previousLanguage = useRef(i18n.language);
+  useEffect(() => {
+    if (previousLanguage.current === i18n.language) return;
+    previousLanguage.current = i18n.language;
+    const invalidFields = Object.keys(errors) as Array<keyof FormValues>;
+    if (invalidFields.length) void trigger(invalidFields);
+  }, [errors, i18n.language, trigger]);
   const [amount, rate, installments, frequency] = watch([
     'requestedAmount', 'annualInterestRate', 'installmentCount', 'paymentFrequency',
   ]);

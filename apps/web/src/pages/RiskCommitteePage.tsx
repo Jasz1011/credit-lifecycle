@@ -11,6 +11,11 @@ import { formatMoney } from '../lib/format';
 import { formatTerm } from '../lib/term';
 import type { RiskCase } from '../types/api';
 
+type RiskNotice =
+  | { kind: 'success'; type: 'approved'; creditNumber: string; count: number }
+  | { kind: 'success'; type: 'rejected' }
+  | { kind: 'error'; type: 'api'; code: string };
+
 export function RiskCommitteePage() {
   const { t, i18n } = useTranslation();
   const { id } = useParams();
@@ -22,7 +27,7 @@ export function RiskCommitteePage() {
   const approveButtonRef = useRef<HTMLButtonElement>(null);
   const rejectButtonRef = useRef<HTMLButtonElement>(null);
   const [dialog, setDialog] = useState<'approve' | 'reject' | null>(null);
-  const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<RiskNotice | null>(null);
   const list = useQuery({
     queryKey: ['risk-pending'],
     queryFn: () => api.get<RiskCase[]>('/risk-committee/pending').then((response) => response.data),
@@ -47,12 +52,12 @@ export function RiskCommitteePage() {
     onSuccess: async (data) => {
       await complete();
       setDialog(null);
-      setMessage({ kind: 'success', text: t('risk.approved', { creditNumber: data.creditNumber, count: data.installmentCount }) });
+      setMessage({ kind: 'success', type: 'approved', creditNumber: data.creditNumber, count: data.installmentCount });
       setTimeout(() => navigate('/risk-committee'), 800);
     },
     onError: (error) => {
       setDialog(null);
-      setMessage({ kind: 'error', text: t(`errors.${getErrorCode(error)}`, { defaultValue: t('errors.UNKNOWN_ERROR') }) });
+      setMessage({ kind: 'error', type: 'api', code: getErrorCode(error) });
     },
   });
   const reject = useMutation({
@@ -60,12 +65,12 @@ export function RiskCommitteePage() {
     onSuccess: async () => {
       await complete();
       setDialog(null);
-      setMessage({ kind: 'success', text: t('risk.rejected') });
+      setMessage({ kind: 'success', type: 'rejected' });
       setTimeout(() => navigate('/risk-committee'), 800);
     },
     onError: (error) => {
       setDialog(null);
-      setMessage({ kind: 'error', text: t(`errors.${getErrorCode(error)}`, { defaultValue: t('errors.UNKNOWN_ERROR') }) });
+      setMessage({ kind: 'error', type: 'api', code: getErrorCode(error) });
     },
   });
 
@@ -120,7 +125,11 @@ export function RiskCommitteePage() {
               <small>{t('risk.observationsHelp')}</small>
               {observationsError ? <small className="field-error" id="observations-error">{t('errors.OBSERVATIONS_REQUIRED')}</small> : null}
             </label>
-            {message ? <Message kind={message.kind}>{message.text}</Message> : null}
+            {message ? <Message kind={message.kind}>{message.type === 'api'
+              ? t(`errors.${message.code}`, { defaultValue: t('errors.UNKNOWN_ERROR') })
+              : message.type === 'approved'
+                ? t('risk.approved', { creditNumber: message.creditNumber, count: message.count })
+                : t('risk.rejected')}</Message> : null}
             <div className="decision-actions">
               <button className="button danger-button" type="button" ref={rejectButtonRef} disabled={isWorking} onClick={handleReject}><X size={18} aria-hidden="true" />{reject.isPending ? t('risk.rejecting') : t('risk.reject')}</button>
               <button className="button primary" type="button" ref={approveButtonRef} disabled={isWorking} onClick={handleApprove}><Check size={18} aria-hidden="true" />{approve.isPending ? t('risk.approving') : t('risk.approve')}</button>
