@@ -65,6 +65,7 @@ Estas capacidades no se presentan como requisitos originales.
 | Mejoras de accesibilidad | Labels, atributos ARIA, foco y controles semánticos | componentes y formularios frontend |
 | Validación IBAN | Validación estructural real | `bank-account.validator.ts` |
 | Compatibilidad banco–IBAN | Bloquear contradicciones verificables | `bank-iban.validator.ts` |
+| Historial operativo seguro | Trazabilidad de créditos existentes sin ampliar las vistas restringidas; actores y fechas provienen de relaciones persistidas y la cuenta se expone enmascarada | `CreditsService`, `presentOperationalHistory`, `CreditTimeline` + pruebas API/web |
 | Documentación de fuentes bancarias | Trazabilidad de la mejora | `BANK_ACCOUNT_VALIDATION.md` |
 
 ## Modelo de datos
